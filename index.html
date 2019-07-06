@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://unpkg.com/contentful-ui-extensions-sdk@3"></script>
+</head>
+
+<body style="margin: 0px; padding: 0px">
+  <style>
+    .colorPickButton {
+      border-radius: 5px;
+      width: 20px;
+      height: 20px;
+      margin: 0 3px;
+      cursor: pointer;
+      display: inline-block;
+      border: thin solid #eee
+    }
+
+    .colorPickButton:hover {
+      transform: scale(1.1)
+    }
+
+    .colorPickDummy {
+      background: #fff;
+      border: 1px dashed #bbb
+    }
+
+
+    .selected {
+      border: 3px solid #999;
+    }
+  </style>
+  <div class="swatchesPicker" id="swatches-picker"
+    style="display: flex; flex-direction: row; flex-wrap: wrap; width: 100%;">
+
+  </div>
+  <script>
+    function rgb2hex(rgb) {
+        if (/^#[0-9A-F]{6}$/i.test(rgb)) return rgb;
+
+        rgb = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+        function hex(x) {
+            return ("0" + parseInt(x).toString(16)).slice(-2);
+        }
+        return "#" + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
+    }
+
+    var cfExt = window.contentfulExtension || window.contentfulWidget
+    cfExt.init(function (api) {
+      console.log('field on initialization', api.field);
+      var validColors = ["#FFFFFF", "#342231"];
+
+      api.field.validations.forEach(function (element) {
+        if (element.in) {
+          validColors = element.in;
+        }
+      });
+
+      validColors.forEach(function (color) {
+        if (api.field.getValue() == color) {
+          $(".swatchesPicker").append('<div class="colorPickButton selected" style="background-color: ' + color + '; ">&nbsp;</div>');
+        } else {
+          $(".swatchesPicker").append('<div class="colorPickButton" style="background-color: ' + color + '; ">&nbsp;</div>');
+        }
+      });
+
+      $(".colorPickButton").click(function(element) {
+        $(".colorPickButton").removeClass("selected");
+        console.log('setting background', rgb2hex($(this).css('background-color')));
+        api.field.setValue(rgb2hex($(this).css('background-color')));
+
+        $(this).addClass("selected");
+      });
+
+    })
+  </script>
+</body>
+
+</html>
