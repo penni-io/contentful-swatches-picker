@@ -1,6 +1,6 @@
 {
   "id": "swatches-picker",
   "name": "swatches-picker",
-  "srcdoc": "./index.html",
+  "src": "./index.html",
   "fieldTypes": ["Symbol"]
 }
